@@ -9,7 +9,10 @@ import 'package:collection/collection.dart';
 import 'package:clippy/store/index.dart';
 import 'package:clippy/utils/hotkey.dart';
 import 'package:clippy/utils/common.dart';
+import 'package:clippy/utils/logger.dart';
+import 'package:clippy/utils/extension.dart';
 import 'package:clippy/database/database.dart';
+import 'package:clippy/database/type/record.dart';
 
 import 'record_card.dart';
 
@@ -51,12 +54,21 @@ void _handleKey(RawKeyEvent key) {
 }
 
 /// 复制
-void copy(RecordEntityData item) {
-  Clipboard.setData(ClipboardData(text: item.value)).then((_) {
+Future<void> copy(RecordEntityData item) async {
+  try {
+    item.type == RECORD_TYPE.file
+        ? await setClipboardContent(item.value, false)
+        : item.type == RECORD_TYPE.image
+            ? await setClipboardContent(item.value, true)
+            : await Clipboard.setData(ClipboardData(text: item.value));
+  } catch (e) {
+    logger.e('复制时发生错误');
+    logger.e(e);
+  } finally {
     recordStore.addRecord(item.type, item.value);
     hideWindow();
     _scrollTo(0);
-  });
+  }
 }
 
 void _scrollTo(int index) {

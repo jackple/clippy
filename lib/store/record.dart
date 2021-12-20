@@ -1,9 +1,12 @@
-import 'package:clippy/utils/common.dart';
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:mobx/mobx.dart';
+import 'package:image/image.dart';
 import 'package:clippy/database/database.dart';
 import 'package:clippy/database/type/record.dart';
 import 'package:clippy/utils/logger.dart';
+import 'package:clippy/utils/common.dart';
 
 part 'record.g.dart';
 
@@ -99,13 +102,23 @@ abstract class _RecordStore with Store {
       return logger.i('已在数据库');
     }
     // 内存&数据库都没有, 才执行添加
+    final thumbnail = type == RECORD_TYPE.image ? getThumbnail(value) : null;
+    final size = type == RECORD_TYPE.file ? await getFileSize(value) : null;
     final id = await recordDao.insertOne(RecordEntityCompanion(
         type: Value(type),
         value: Value(value),
+        thumbnail: Value(thumbnail),
+        size: Value(size),
         createAt: Value(now),
         updateAt: Value(now)));
     final record = RecordEntityData(
-        id: id, type: type, value: value, createAt: now, updateAt: now);
+        id: id,
+        type: type,
+        value: value,
+        thumbnail: thumbnail,
+        size: size,
+        createAt: now,
+        updateAt: now);
     _addRecordInMemory(record);
     logger.i('新增');
   }
@@ -123,12 +136,27 @@ abstract class _RecordStore with Store {
     } else if (item.value.contains(searchKW!)) {
       searchedRecords.insert(0, item);
       setSelectedId(item.id);
-      if (searchedRecords.length > 500) {
+      if (searchedRecords.length > 300) {
         searchedRecords.removeLast();
       }
     }
-    if (records.length > 500) {
+    if (records.length > 300) {
       records.removeLast();
+    }
+  }
+
+  String? getThumbnail(String value) {
+    Image? thumbnailImage;
+    final originImage = decodeImage(base64Decode(value));
+    if (originImage != null) {
+      if (originImage.width > 750) {
+        thumbnailImage = copyResize(originImage, width: 300);
+      } else if (originImage.height > 750) {
+        thumbnailImage = copyResize(originImage, height: 300);
+      }
+      if (thumbnailImage != null) {
+        return base64Encode(encodeJpg(thumbnailImage, quality: 30));
+      }
     }
   }
 }

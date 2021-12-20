@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.17.0 
   flutter_hooks: ^0.18.1 
   collection: ^1.15.0 
+  image: ^3.1.0 
 
   window_size:
     git:
@@ -87,7 +88,9 @@ flutter:
   assets:
     - assets/text.png
     - assets/color.png
-  #   - images/a_dot_ham.jpeg
+    - assets/pic.png
+    - assets/file.png
+    - assets/file-content.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

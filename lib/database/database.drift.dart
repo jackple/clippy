@@ -12,12 +12,20 @@ class RecordEntityData extends DataClass
   final int id;
   final RECORD_TYPE type;
   final String value;
+
+  /// 图片缩略图
+  final String? thumbnail;
+
+  /// 文件大小
+  final int? size;
   final int createAt;
   final int updateAt;
   RecordEntityData(
       {required this.id,
       required this.type,
       required this.value,
+      this.thumbnail,
+      this.size,
       required this.createAt,
       required this.updateAt});
   factory RecordEntityData.fromData(Map<String, dynamic> data,
@@ -30,6 +38,10 @@ class RecordEntityData extends DataClass
           .mapFromDatabaseResponse(data['${effectivePrefix}type']))!,
       value: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}value'])!,
+      thumbnail: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail']),
+      size: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}size']),
       createAt: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}create_at'])!,
       updateAt: const IntType()
@@ -45,6 +57,12 @@ class RecordEntityData extends DataClass
       map['type'] = Variable<int>(converter.mapToSql(type)!);
     }
     map['value'] = Variable<String>(value);
+    if (!nullToAbsent || thumbnail != null) {
+      map['thumbnail'] = Variable<String?>(thumbnail);
+    }
+    if (!nullToAbsent || size != null) {
+      map['size'] = Variable<int?>(size);
+    }
     map['create_at'] = Variable<int>(createAt);
     map['update_at'] = Variable<int>(updateAt);
     return map;
@@ -55,6 +73,10 @@ class RecordEntityData extends DataClass
       id: Value(id),
       type: Value(type),
       value: Value(value),
+      thumbnail: thumbnail == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnail),
+      size: size == null && nullToAbsent ? const Value.absent() : Value(size),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -67,6 +89,8 @@ class RecordEntityData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       type: serializer.fromJson<RECORD_TYPE>(json['type']),
       value: serializer.fromJson<String>(json['value']),
+      thumbnail: serializer.fromJson<String?>(json['thumbnail']),
+      size: serializer.fromJson<int?>(json['size']),
       createAt: serializer.fromJson<int>(json['create_at']),
       updateAt: serializer.fromJson<int>(json['update_at']),
     );
@@ -78,6 +102,8 @@ class RecordEntityData extends DataClass
       'id': serializer.toJson<int>(id),
       'type': serializer.toJson<RECORD_TYPE>(type),
       'value': serializer.toJson<String>(value),
+      'thumbnail': serializer.toJson<String?>(thumbnail),
+      'size': serializer.toJson<int?>(size),
       'create_at': serializer.toJson<int>(createAt),
       'update_at': serializer.toJson<int>(updateAt),
     };
@@ -87,12 +113,16 @@ class RecordEntityData extends DataClass
           {int? id,
           RECORD_TYPE? type,
           String? value,
+          String? thumbnail,
+          int? size,
           int? createAt,
           int? updateAt}) =>
       RecordEntityData(
         id: id ?? this.id,
         type: type ?? this.type,
         value: value ?? this.value,
+        thumbnail: thumbnail ?? this.thumbnail,
+        size: size ?? this.size,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -102,6 +132,8 @@ class RecordEntityData extends DataClass
           ..write('id: $id, ')
           ..write('type: $type, ')
           ..write('value: $value, ')
+          ..write('thumbnail: $thumbnail, ')
+          ..write('size: $size, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -109,7 +141,8 @@ class RecordEntityData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, type, value, createAt, updateAt);
+  int get hashCode =>
+      Object.hash(id, type, value, thumbnail, size, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -117,6 +150,8 @@ class RecordEntityData extends DataClass
           other.id == this.id &&
           other.type == this.type &&
           other.value == this.value &&
+          other.thumbnail == this.thumbnail &&
+          other.size == this.size &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
@@ -125,12 +160,16 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
   final Value<int> id;
   final Value<RECORD_TYPE> type;
   final Value<String> value;
+  final Value<String?> thumbnail;
+  final Value<int?> size;
   final Value<int> createAt;
   final Value<int> updateAt;
   const RecordEntityCompanion({
     this.id = const Value.absent(),
     this.type = const Value.absent(),
     this.value = const Value.absent(),
+    this.thumbnail = const Value.absent(),
+    this.size = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   });
@@ -138,6 +177,8 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     this.id = const Value.absent(),
     required RECORD_TYPE type,
     required String value,
+    this.thumbnail = const Value.absent(),
+    this.size = const Value.absent(),
     required int createAt,
     required int updateAt,
   })  : type = Value(type),
@@ -148,6 +189,8 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     Expression<int>? id,
     Expression<RECORD_TYPE>? type,
     Expression<String>? value,
+    Expression<String?>? thumbnail,
+    Expression<int?>? size,
     Expression<int>? createAt,
     Expression<int>? updateAt,
   }) {
@@ -155,6 +198,8 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
       if (id != null) 'id': id,
       if (type != null) 'type': type,
       if (value != null) 'value': value,
+      if (thumbnail != null) 'thumbnail': thumbnail,
+      if (size != null) 'size': size,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
     });
@@ -164,12 +209,16 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
       {Value<int>? id,
       Value<RECORD_TYPE>? type,
       Value<String>? value,
+      Value<String?>? thumbnail,
+      Value<int?>? size,
       Value<int>? createAt,
       Value<int>? updateAt}) {
     return RecordEntityCompanion(
       id: id ?? this.id,
       type: type ?? this.type,
       value: value ?? this.value,
+      thumbnail: thumbnail ?? this.thumbnail,
+      size: size ?? this.size,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
     );
@@ -188,6 +237,12 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     if (value.present) {
       map['value'] = Variable<String>(value.value);
     }
+    if (thumbnail.present) {
+      map['thumbnail'] = Variable<String?>(thumbnail.value);
+    }
+    if (size.present) {
+      map['size'] = Variable<int?>(size.value);
+    }
     if (createAt.present) {
       map['create_at'] = Variable<int>(createAt.value);
     }
@@ -203,6 +258,8 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
           ..write('id: $id, ')
           ..write('type: $type, ')
           ..write('value: $value, ')
+          ..write('thumbnail: $thumbnail, ')
+          ..write('size: $size, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -230,6 +287,14 @@ class $RecordEntityTable extends RecordEntity
   late final GeneratedColumn<String?> value = GeneratedColumn<String?>(
       'value', aliasedName, false,
       typeName: 'TEXT', requiredDuringInsert: true);
+  final VerificationMeta _thumbnailMeta = const VerificationMeta('thumbnail');
+  late final GeneratedColumn<String?> thumbnail = GeneratedColumn<String?>(
+      'thumbnail', aliasedName, true,
+      typeName: 'TEXT', requiredDuringInsert: false);
+  final VerificationMeta _sizeMeta = const VerificationMeta('size');
+  late final GeneratedColumn<int?> size = GeneratedColumn<int?>(
+      'size', aliasedName, true,
+      typeName: 'INTEGER', requiredDuringInsert: false);
   final VerificationMeta _createAtMeta = const VerificationMeta('createAt');
   late final GeneratedColumn<int?> createAt = GeneratedColumn<int?>(
       'create_at', aliasedName, false,
@@ -239,7 +304,8 @@ class $RecordEntityTable extends RecordEntity
       'update_at', aliasedName, false,
       typeName: 'INTEGER', requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, type, value, createAt, updateAt];
+  List<GeneratedColumn> get $columns =>
+      [id, type, value, thumbnail, size, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? 'record';
   @override
@@ -258,6 +324,14 @@ class $RecordEntityTable extends RecordEntity
           _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
     } else if (isInserting) {
       context.missing(_valueMeta);
+    }
+    if (data.containsKey('thumbnail')) {
+      context.handle(_thumbnailMeta,
+          thumbnail.isAcceptableOrUnknown(data['thumbnail']!, _thumbnailMeta));
+    }
+    if (data.containsKey('size')) {
+      context.handle(
+          _sizeMeta, size.isAcceptableOrUnknown(data['size']!, _sizeMeta));
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,

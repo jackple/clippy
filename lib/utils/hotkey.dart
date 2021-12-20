@@ -90,5 +90,5 @@ Future<void> initHotKey() async {
     final hotKey = HotKey.fromJson(json.decode(localHotKeyStr));
     return bindHotKey(hotKey.keyCode!, hotKey.modifiers!, true);
   }
-  bindHotKey(KeyCode.keyV, [KeyModifier.alt], true);
+  bindHotKey(KeyCode.keyV, [KeyModifier.meta, KeyModifier.shift], true);
 }

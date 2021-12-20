@@ -13,6 +13,12 @@ class RecordEntity extends Table {
 
   TextColumn get value => text()();
 
+  /// 图片缩略图
+  TextColumn get thumbnail => text().nullable()();
+
+  /// 文件大小
+  IntColumn get size => integer().nullable()();
+
   @JsonKey('create_at')
   IntColumn get createAt => integer()();
 

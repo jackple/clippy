@@ -18,7 +18,11 @@ class RecordDao extends DatabaseAccessor<DB> with _$RecordDaoMixin {
         ..where((tbl) => tbl.updateAt.isSmallerThanValue(oldestUpdateAt));
     }
     if (!isEmptyString(keyword)) {
-      query = query..where((tbl) => tbl.value.like('%${keyword!}%'));
+      query = query
+        ..where((tbl) =>
+            tbl.value.like('%${keyword!}%') &
+            // 只允许搜索文本类型
+            tbl.type.equalsValue(RECORD_TYPE.text));
     }
     query = query
       ..orderBy([

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -71,4 +74,31 @@ Color reverseColor(String color) {
       (255 - int.parse(color.substring(4, 6), radix: 16)).toRadixString(16);
   final newColorStr = '${_padZero(r)}${_padZero(g)}${_padZero(b)}';
   return hexToColor(newColorStr).withOpacity(0.6);
+}
+
+/// 去除本机文件地址前面的file协议
+String removeFileProtocol(String path) {
+  if (!isEmptyString(path) && path.startsWith('file://')) {
+    path = path.substring(7);
+  }
+  return path;
+}
+
+/// 获取文件的大小
+Future<int?> getFileSize(String path) async {
+  path = removeFileProtocol(path);
+  final file = File(Uri.decodeComponent(path));
+  final len = await file.length();
+  return len;
+}
+
+const _suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+/// 获取文件的大小的格式化
+String getFileSizeFormat(int bytes, [int decimals = 3]) {
+  if (bytes <= 0) return "0 B";
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) +
+      ' ' +
+      _suffixes[i];
 }

@@ -8,6 +8,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'widget/theme.dart';
 import 'widget/home/home.dart';
 import 'utils/common.dart';
+import 'utils/extension.dart';
 import 'utils/hotkey.dart';
 import 'utils/logger.dart';
 import 'database/database.dart';
@@ -15,9 +16,23 @@ import 'database/type/record.dart';
 import 'store/index.dart';
 
 Future<void> getLatestRecord() async {
+  var filePath = await getClipboardContent(false);
+  if (filePath != null) {
+    if (filePath.isNotEmpty) {
+      recordStore.addRecord(RECORD_TYPE.file, filePath);
+    }
+    return;
+  }
   var clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-  if (!isEmptyString(clipboardData?.text)) {
-    recordStore.addRecord(RECORD_TYPE.text, clipboardData!.text!);
+  if (clipboardData?.text != null) {
+    if (clipboardData!.text!.isNotEmpty) {
+      recordStore.addRecord(RECORD_TYPE.text, clipboardData.text!);
+    }
+    return;
+  }
+  final imageBase64Str = await getClipboardContent(true);
+  if (!isEmptyString(imageBase64Str)) {
+    recordStore.addRecord(RECORD_TYPE.image, imageBase64Str!);
   }
 }
 

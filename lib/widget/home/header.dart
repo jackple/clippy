@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:clippy/store/index.dart';
 import 'package:clippy/utils/logger.dart';
 
-class Header extends StatefulHookWidget {
+class Header extends StatefulWidget {
   const Header({Key? key}) : super(key: key);
 
   @override

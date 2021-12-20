@@ -6,6 +6,6 @@ enum RECORD_TYPE {
   /// 图片
   image,
 
-  /// 视频
-  video,
+  /// 文件
+  file,
 }
