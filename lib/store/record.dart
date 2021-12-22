@@ -109,23 +109,17 @@ abstract class _RecordStore with Store {
         ? '${imgSizeAndthumbnail.width}x${imgSizeAndthumbnail.height}'
         : null;
     final size = type == RECORD_TYPE.file ? await getFileSize(value) : null;
-    final id = await recordDao.insertOne(RecordEntityCompanion(
+    final recordEntityCompanion = RecordEntityCompanion(
         type: Value(type),
         value: Value(value),
         thumbnail: Value(imgSizeAndthumbnail?.thumbnail),
         imgSize: Value(imgSize),
         size: Value(size),
         createAt: Value(now),
-        updateAt: Value(now)));
-    final record = RecordEntityData(
-        id: id,
-        type: type,
-        value: value,
-        thumbnail: imgSizeAndthumbnail?.thumbnail,
-        imgSize: imgSize,
-        size: size,
-        createAt: now,
-        updateAt: now);
+        updateAt: Value(now));
+    final id = await recordDao.insertOne(recordEntityCompanion);
+    final record = db.recordEntity
+        .mapFromCompanion(recordEntityCompanion.copyWith(id: Value(id)));
     _addRecordInMemory(record);
     logger.i('新增');
   }
