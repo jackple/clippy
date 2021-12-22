@@ -12,39 +12,15 @@ import 'utils/extension.dart';
 import 'utils/hotkey.dart';
 import 'utils/logger.dart';
 import 'database/database.dart';
-import 'database/type/record.dart';
 import 'store/index.dart';
-
-Future<void> getLatestRecord() async {
-  var filePath = await getClipboardContent(false);
-  if (filePath != null) {
-    if (filePath.isNotEmpty) {
-      recordStore.addRecord(RECORD_TYPE.file, filePath);
-    }
-    return;
-  }
-  var clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-  if (clipboardData?.text != null) {
-    if (clipboardData!.text!.isNotEmpty) {
-      recordStore.addRecord(RECORD_TYPE.text, clipboardData.text!);
-    }
-    return;
-  }
-  final imageBase64Str = await getClipboardContent(true);
-  if (!isEmptyString(imageBase64Str)) {
-    recordStore.addRecord(RECORD_TYPE.image, imageBase64Str!);
-  }
-}
 
 /// 初始化剪切板相关
 Future<void> initRecords() async {
   // 获取剪切板的数据库记录
   await recordStore.getRecords();
 
-  /// 定时获取剪切板内容
-  Timer.periodic(const Duration(milliseconds: 500), (t) {
-    getLatestRecord();
-  });
+  // 初始化剪切板监听器
+  initExtension();
 }
 
 Future<void> init() async {
