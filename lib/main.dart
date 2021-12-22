@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 
 import 'widget/theme.dart';
 import 'widget/home/home.dart';
-import 'utils/common.dart';
 import 'utils/extension.dart';
 import 'utils/hotkey.dart';
 import 'utils/logger.dart';
