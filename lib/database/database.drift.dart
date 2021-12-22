@@ -18,6 +18,9 @@ class RecordEntityData extends DataClass
 
   /// 文件大小
   final int? size;
+
+  /// 图片尺寸, 例: 100x100
+  final String? imgSize;
   final int createAt;
   final int updateAt;
   RecordEntityData(
@@ -26,6 +29,7 @@ class RecordEntityData extends DataClass
       required this.value,
       this.thumbnail,
       this.size,
+      this.imgSize,
       required this.createAt,
       required this.updateAt});
   factory RecordEntityData.fromData(Map<String, dynamic> data,
@@ -42,6 +46,8 @@ class RecordEntityData extends DataClass
           .mapFromDatabaseResponse(data['${effectivePrefix}thumbnail']),
       size: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}size']),
+      imgSize: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}img_size']),
       createAt: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}create_at'])!,
       updateAt: const IntType()
@@ -63,6 +69,9 @@ class RecordEntityData extends DataClass
     if (!nullToAbsent || size != null) {
       map['size'] = Variable<int?>(size);
     }
+    if (!nullToAbsent || imgSize != null) {
+      map['img_size'] = Variable<String?>(imgSize);
+    }
     map['create_at'] = Variable<int>(createAt);
     map['update_at'] = Variable<int>(updateAt);
     return map;
@@ -77,6 +86,9 @@ class RecordEntityData extends DataClass
           ? const Value.absent()
           : Value(thumbnail),
       size: size == null && nullToAbsent ? const Value.absent() : Value(size),
+      imgSize: imgSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imgSize),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -91,6 +103,7 @@ class RecordEntityData extends DataClass
       value: serializer.fromJson<String>(json['value']),
       thumbnail: serializer.fromJson<String?>(json['thumbnail']),
       size: serializer.fromJson<int?>(json['size']),
+      imgSize: serializer.fromJson<String?>(json['img_size']),
       createAt: serializer.fromJson<int>(json['create_at']),
       updateAt: serializer.fromJson<int>(json['update_at']),
     );
@@ -104,6 +117,7 @@ class RecordEntityData extends DataClass
       'value': serializer.toJson<String>(value),
       'thumbnail': serializer.toJson<String?>(thumbnail),
       'size': serializer.toJson<int?>(size),
+      'img_size': serializer.toJson<String?>(imgSize),
       'create_at': serializer.toJson<int>(createAt),
       'update_at': serializer.toJson<int>(updateAt),
     };
@@ -115,6 +129,7 @@ class RecordEntityData extends DataClass
           String? value,
           String? thumbnail,
           int? size,
+          String? imgSize,
           int? createAt,
           int? updateAt}) =>
       RecordEntityData(
@@ -123,6 +138,7 @@ class RecordEntityData extends DataClass
         value: value ?? this.value,
         thumbnail: thumbnail ?? this.thumbnail,
         size: size ?? this.size,
+        imgSize: imgSize ?? this.imgSize,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -134,6 +150,7 @@ class RecordEntityData extends DataClass
           ..write('value: $value, ')
           ..write('thumbnail: $thumbnail, ')
           ..write('size: $size, ')
+          ..write('imgSize: $imgSize, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -141,8 +158,8 @@ class RecordEntityData extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, type, value, thumbnail, size, createAt, updateAt);
+  int get hashCode => Object.hash(
+      id, type, value, thumbnail, size, imgSize, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -152,6 +169,7 @@ class RecordEntityData extends DataClass
           other.value == this.value &&
           other.thumbnail == this.thumbnail &&
           other.size == this.size &&
+          other.imgSize == this.imgSize &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
@@ -162,6 +180,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
   final Value<String> value;
   final Value<String?> thumbnail;
   final Value<int?> size;
+  final Value<String?> imgSize;
   final Value<int> createAt;
   final Value<int> updateAt;
   const RecordEntityCompanion({
@@ -170,6 +189,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     this.value = const Value.absent(),
     this.thumbnail = const Value.absent(),
     this.size = const Value.absent(),
+    this.imgSize = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   });
@@ -179,6 +199,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     required String value,
     this.thumbnail = const Value.absent(),
     this.size = const Value.absent(),
+    this.imgSize = const Value.absent(),
     required int createAt,
     required int updateAt,
   })  : type = Value(type),
@@ -191,6 +212,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     Expression<String>? value,
     Expression<String?>? thumbnail,
     Expression<int?>? size,
+    Expression<String?>? imgSize,
     Expression<int>? createAt,
     Expression<int>? updateAt,
   }) {
@@ -200,6 +222,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
       if (value != null) 'value': value,
       if (thumbnail != null) 'thumbnail': thumbnail,
       if (size != null) 'size': size,
+      if (imgSize != null) 'img_size': imgSize,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
     });
@@ -211,6 +234,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
       Value<String>? value,
       Value<String?>? thumbnail,
       Value<int?>? size,
+      Value<String?>? imgSize,
       Value<int>? createAt,
       Value<int>? updateAt}) {
     return RecordEntityCompanion(
@@ -219,6 +243,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
       value: value ?? this.value,
       thumbnail: thumbnail ?? this.thumbnail,
       size: size ?? this.size,
+      imgSize: imgSize ?? this.imgSize,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
     );
@@ -243,6 +268,9 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
     if (size.present) {
       map['size'] = Variable<int?>(size.value);
     }
+    if (imgSize.present) {
+      map['img_size'] = Variable<String?>(imgSize.value);
+    }
     if (createAt.present) {
       map['create_at'] = Variable<int>(createAt.value);
     }
@@ -260,6 +288,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
           ..write('value: $value, ')
           ..write('thumbnail: $thumbnail, ')
           ..write('size: $size, ')
+          ..write('imgSize: $imgSize, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -295,6 +324,10 @@ class $RecordEntityTable extends RecordEntity
   late final GeneratedColumn<int?> size = GeneratedColumn<int?>(
       'size', aliasedName, true,
       typeName: 'INTEGER', requiredDuringInsert: false);
+  final VerificationMeta _imgSizeMeta = const VerificationMeta('imgSize');
+  late final GeneratedColumn<String?> imgSize = GeneratedColumn<String?>(
+      'img_size', aliasedName, true,
+      typeName: 'TEXT', requiredDuringInsert: false);
   final VerificationMeta _createAtMeta = const VerificationMeta('createAt');
   late final GeneratedColumn<int?> createAt = GeneratedColumn<int?>(
       'create_at', aliasedName, false,
@@ -305,7 +338,7 @@ class $RecordEntityTable extends RecordEntity
       typeName: 'INTEGER', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, type, value, thumbnail, size, createAt, updateAt];
+      [id, type, value, thumbnail, size, imgSize, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? 'record';
   @override
@@ -332,6 +365,10 @@ class $RecordEntityTable extends RecordEntity
     if (data.containsKey('size')) {
       context.handle(
           _sizeMeta, size.isAcceptableOrUnknown(data['size']!, _sizeMeta));
+    }
+    if (data.containsKey('img_size')) {
+      context.handle(_imgSizeMeta,
+          imgSize.isAcceptableOrUnknown(data['img_size']!, _imgSizeMeta));
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,

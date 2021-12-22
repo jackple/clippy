@@ -7,6 +7,7 @@ import 'package:clippy/database/database.dart';
 import 'package:clippy/database/type/record.dart';
 import 'package:clippy/utils/logger.dart';
 import 'package:clippy/utils/common.dart';
+import './record_type.dart';
 
 part 'record.g.dart';
 
@@ -102,12 +103,17 @@ abstract class _RecordStore with Store {
       return logger.i('已在数据库');
     }
     // 内存&数据库都没有, 才执行添加
-    final thumbnail = type == RECORD_TYPE.image ? getThumbnail(value) : null;
+    final imgSizeAndthumbnail =
+        type == RECORD_TYPE.image ? getSizeAndThumbnail(value) : null;
+    final imgSize = imgSizeAndthumbnail != null
+        ? '${imgSizeAndthumbnail.width}x${imgSizeAndthumbnail.height}'
+        : null;
     final size = type == RECORD_TYPE.file ? await getFileSize(value) : null;
     final id = await recordDao.insertOne(RecordEntityCompanion(
         type: Value(type),
         value: Value(value),
-        thumbnail: Value(thumbnail),
+        thumbnail: Value(imgSizeAndthumbnail?.thumbnail),
+        imgSize: Value(imgSize),
         size: Value(size),
         createAt: Value(now),
         updateAt: Value(now)));
@@ -115,7 +121,8 @@ abstract class _RecordStore with Store {
         id: id,
         type: type,
         value: value,
-        thumbnail: thumbnail,
+        thumbnail: imgSizeAndthumbnail?.thumbnail,
+        imgSize: imgSize,
         size: size,
         createAt: now,
         updateAt: now);
@@ -136,27 +143,31 @@ abstract class _RecordStore with Store {
     } else if (item.value.contains(searchKW!)) {
       searchedRecords.insert(0, item);
       setSelectedId(item.id);
-      if (searchedRecords.length > 300) {
-        searchedRecords.removeLast();
+      if (searchedRecords.length > 200) {
+        searchedRecords.removeRange(200, searchedRecords.length);
       }
     }
-    if (records.length > 300) {
-      records.removeLast();
+    if (records.length > 200) {
+      records.removeRange(200, records.length);
     }
   }
 
-  String? getThumbnail(String value) {
-    Image? thumbnailImage;
+  ImgSizeAndThumbnail? getSizeAndThumbnail(String value) {
+    Image? thumbnail;
     final originImage = decodeImage(base64Decode(value));
     if (originImage != null) {
       if (originImage.width > 750) {
-        thumbnailImage = copyResize(originImage, width: 300);
+        thumbnail = copyResize(originImage, width: 300);
       } else if (originImage.height > 750) {
-        thumbnailImage = copyResize(originImage, height: 300);
+        thumbnail = copyResize(originImage, height: 300);
       }
-      if (thumbnailImage != null) {
-        return base64Encode(encodeJpg(thumbnailImage, quality: 30));
-      }
+      return ImgSizeAndThumbnail(
+          originImage.width,
+          originImage.height,
+          thumbnail != null
+              ? base64Encode(encodeJpg(thumbnail, quality: 30))
+              : null);
     }
+    return null;
   }
 }

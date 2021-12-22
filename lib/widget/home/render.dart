@@ -27,9 +27,6 @@ class Render extends HookWidget {
     final isImage = item.type == RECORD_TYPE.image;
     final isFile = item.type == RECORD_TYPE.file;
 
-    final imageSize = useState(ImageSize(0, 0));
-    final unmounted = useRef(false);
-
     Image? image = useMemoized(
         () => isImage
             ? Image.memory(
@@ -40,24 +37,6 @@ class Render extends HookWidget {
               )
             : null,
         []);
-
-    useEffect(() {
-      if (image != null) {
-        image.image.resolve(const ImageConfiguration()).addListener(
-          ImageStreamListener(
-            (ImageInfo info, bool _) {
-              if (!unmounted.value) {
-                imageSize.value =
-                    ImageSize(info.image.width, info.image.height);
-              }
-            },
-          ),
-        );
-      }
-      return () {
-        unmounted.value = true;
-      };
-    }, []);
 
     List<Widget> children = [
       Container(
@@ -155,13 +134,13 @@ class Render extends HookWidget {
         Expanded(
             child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-          child: image!,
+          child: image,
         )),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Center(
             child: Text(
-              '${imageSize.value.width} x ${imageSize.value.height} 像素',
+              '${item.imgSize} 像素',
               style: const TextStyle(
                   fontSize: 11, color: Color.fromRGBO(10, 19, 18, 0.4)),
             ),

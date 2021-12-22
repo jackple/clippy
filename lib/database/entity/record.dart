@@ -19,6 +19,10 @@ class RecordEntity extends Table {
   /// 文件大小
   IntColumn get size => integer().nullable()();
 
+  /// 图片尺寸, 例: 100x100
+  @JsonKey('img_size')
+  TextColumn get imgSize => text().nullable()();
+
   @JsonKey('create_at')
   IntColumn get createAt => integer()();
 

@@ -33,7 +33,7 @@ void initDaos(DB _db) {
 class DB extends _$DB {
   // https://drift.simonbinder.eu/docs/advanced-features/migrations/
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(onCreate: (Migrator m) {
@@ -42,6 +42,9 @@ class DB extends _$DB {
         if (from == 1) {
           await m.addColumn(recordEntity, recordEntity.thumbnail);
           await m.addColumn(recordEntity, recordEntity.size);
+        }
+        if (from == 2) {
+          await m.addColumn(recordEntity, recordEntity.imgSize);
         }
       });
 
