@@ -22,7 +22,7 @@ class RecordDao extends DatabaseAccessor<DB> with _$RecordDaoMixin {
         ..where((tbl) =>
             tbl.value.like('%${keyword!}%') &
             // 只允许搜索文本类型
-            tbl.type.equalsValue(RECORD_TYPE.text));
+            tbl.type.equalsValue(RecordType.text));
     }
     query = query
       ..orderBy([
@@ -32,7 +32,7 @@ class RecordDao extends DatabaseAccessor<DB> with _$RecordDaoMixin {
     return query.get();
   }
 
-  Future<RecordEntityData?> getOne(RECORD_TYPE type, String value) => (select(
+  Future<RecordEntityData?> getOne(RecordType type, String value) => (select(
           recordEntity)
         ..where((tbl) => tbl.type.equalsValue(type) & tbl.value.equals(value)))
       .getSingleOrNull();

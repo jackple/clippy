@@ -56,9 +56,9 @@ void _handleKey(RawKeyEvent key) {
 /// 复制
 Future<void> copy(RecordEntityData item) async {
   try {
-    item.type == RECORD_TYPE.file
+    item.type == RecordType.file
         ? await setClipboardContent(item.value, false)
-        : item.type == RECORD_TYPE.image
+        : item.type == RecordType.image
             ? await setClipboardContent(item.value, true)
             : await Clipboard.setData(ClipboardData(text: item.value));
   } catch (e) {

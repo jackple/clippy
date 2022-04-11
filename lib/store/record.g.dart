@@ -94,7 +94,7 @@ mixin _$RecordStore on _RecordStore, Store {
   final _$addRecordAsyncAction = AsyncAction('_RecordStore.addRecord');
 
   @override
-  Future<void> addRecord(RECORD_TYPE type, String value) {
+  Future<void> addRecord(RecordType type, String value) {
     return _$addRecordAsyncAction.run(() => super.addRecord(type, value));
   }
 

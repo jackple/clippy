@@ -18,14 +18,14 @@ void initExtension() {
     if (isEmptyString(value)) {
       return;
     }
-    if (type == RECORD_TYPE.text.index) {
-      return recordStore.addRecord(RECORD_TYPE.text, value);
+    if (type == RecordType.text.index) {
+      return recordStore.addRecord(RecordType.text, value);
     }
-    if (type == RECORD_TYPE.image.index) {
-      return recordStore.addRecord(RECORD_TYPE.image, value);
+    if (type == RecordType.image.index) {
+      return recordStore.addRecord(RecordType.image, value);
     }
-    if (type == RECORD_TYPE.file.index) {
-      return recordStore.addRecord(RECORD_TYPE.file, value);
+    if (type == RecordType.file.index) {
+      return recordStore.addRecord(RecordType.file, value);
     }
   });
 }
@@ -39,6 +39,7 @@ Future<String?> getClipboardContent([bool image = false]) async {
     logger.e("error in getting clipboard content");
     // ignore: avoid_print
     print(e);
+    return null;
   }
 }
 

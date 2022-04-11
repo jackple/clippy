@@ -6,6 +6,13 @@ import 'package:clippy/store/index.dart';
 import 'render.dart';
 import 'list.dart';
 
+class TapTime {
+  int? id;
+  int? time;
+}
+
+var _tapTime = TapTime();
+
 class RecordCard extends StatelessWidget {
   final RecordEntityData item;
   final int index;
@@ -23,10 +30,13 @@ class RecordCard extends StatelessWidget {
 
       return GestureDetector(
           onTap: () {
+            final now = DateTime.now().millisecondsSinceEpoch;
+            if (_tapTime.id == item.id && now - _tapTime.time! < 300) {
+              copy(item);
+            }
+            _tapTime.time = now;
+            _tapTime.id = item.id;
             recordStore.setSelectedId(item.id);
-          },
-          onDoubleTap: () {
-            copy(item);
           },
           child: Container(
             margin: EdgeInsets.only(

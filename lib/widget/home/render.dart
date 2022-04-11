@@ -22,10 +22,18 @@ class Render extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isText = item.type == RECORD_TYPE.text;
+    final isText = item.type == RecordType.text;
     final _isColor = isText ? isColor(item.value) : false;
-    final isImage = item.type == RECORD_TYPE.image;
-    final isFile = item.type == RECORD_TYPE.file;
+    final isImage = item.type == RecordType.image;
+    final isFile = item.type == RecordType.file;
+
+    String? text = useMemoized(
+        () => isText && !_isColor
+            ? item.value.length > 450
+                ? item.value.substring(0, 450)
+                : item.value
+            : null,
+        []);
 
     Image? image = useMemoized(
         () => isImage
@@ -153,7 +161,7 @@ class Render extends HookWidget {
             child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
-            item.value,
+            text!,
             style:
                 Theme.of(context).textTheme.headline4?.copyWith(fontSize: 12),
           ),

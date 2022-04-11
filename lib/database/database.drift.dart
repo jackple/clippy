@@ -10,7 +10,7 @@ part of 'database.dart';
 class RecordEntityData extends DataClass
     implements Insertable<RecordEntityData> {
   final int id;
-  final RECORD_TYPE type;
+  final RecordType type;
   final String value;
 
   /// 图片缩略图
@@ -99,7 +99,7 @@ class RecordEntityData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RecordEntityData(
       id: serializer.fromJson<int>(json['id']),
-      type: serializer.fromJson<RECORD_TYPE>(json['type']),
+      type: serializer.fromJson<RecordType>(json['type']),
       value: serializer.fromJson<String>(json['value']),
       thumbnail: serializer.fromJson<String?>(json['thumbnail']),
       size: serializer.fromJson<int?>(json['size']),
@@ -113,7 +113,7 @@ class RecordEntityData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'type': serializer.toJson<RECORD_TYPE>(type),
+      'type': serializer.toJson<RecordType>(type),
       'value': serializer.toJson<String>(value),
       'thumbnail': serializer.toJson<String?>(thumbnail),
       'size': serializer.toJson<int?>(size),
@@ -125,7 +125,7 @@ class RecordEntityData extends DataClass
 
   RecordEntityData copyWith(
           {int? id,
-          RECORD_TYPE? type,
+          RecordType? type,
           String? value,
           String? thumbnail,
           int? size,
@@ -176,7 +176,7 @@ class RecordEntityData extends DataClass
 
 class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
   final Value<int> id;
-  final Value<RECORD_TYPE> type;
+  final Value<RecordType> type;
   final Value<String> value;
   final Value<String?> thumbnail;
   final Value<int?> size;
@@ -195,7 +195,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
   });
   RecordEntityCompanion.insert({
     this.id = const Value.absent(),
-    required RECORD_TYPE type,
+    required RecordType type,
     required String value,
     this.thumbnail = const Value.absent(),
     this.size = const Value.absent(),
@@ -208,7 +208,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
         updateAt = Value(updateAt);
   static Insertable<RecordEntityData> custom({
     Expression<int>? id,
-    Expression<RECORD_TYPE>? type,
+    Expression<RecordType>? type,
     Expression<String>? value,
     Expression<String?>? thumbnail,
     Expression<int?>? size,
@@ -230,7 +230,7 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
 
   RecordEntityCompanion copyWith(
       {Value<int>? id,
-      Value<RECORD_TYPE>? type,
+      Value<RecordType>? type,
       Value<String>? value,
       Value<String?>? thumbnail,
       Value<int?>? size,
@@ -298,44 +298,53 @@ class RecordEntityCompanion extends UpdateCompanion<RecordEntityData> {
 
 class $RecordEntityTable extends RecordEntity
     with TableInfo<$RecordEntityTable, RecordEntityData> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $RecordEntityTable(this._db, [this._alias]);
+  $RecordEntityTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _typeMeta = const VerificationMeta('type');
-  late final GeneratedColumnWithTypeConverter<RECORD_TYPE, int?> type =
+  @override
+  late final GeneratedColumnWithTypeConverter<RecordType, int?> type =
       GeneratedColumn<int?>('type', aliasedName, false,
-              typeName: 'INTEGER', requiredDuringInsert: true)
-          .withConverter<RECORD_TYPE>($RecordEntityTable.$converter0);
+              type: const IntType(), requiredDuringInsert: true)
+          .withConverter<RecordType>($RecordEntityTable.$converter0);
   final VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
   late final GeneratedColumn<String?> value = GeneratedColumn<String?>(
       'value', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _thumbnailMeta = const VerificationMeta('thumbnail');
+  @override
   late final GeneratedColumn<String?> thumbnail = GeneratedColumn<String?>(
       'thumbnail', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _sizeMeta = const VerificationMeta('size');
+  @override
   late final GeneratedColumn<int?> size = GeneratedColumn<int?>(
       'size', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   final VerificationMeta _imgSizeMeta = const VerificationMeta('imgSize');
+  @override
   late final GeneratedColumn<String?> imgSize = GeneratedColumn<String?>(
       'img_size', aliasedName, true,
-      typeName: 'TEXT', requiredDuringInsert: false);
+      type: const StringType(), requiredDuringInsert: false);
   final VerificationMeta _createAtMeta = const VerificationMeta('createAt');
+  @override
   late final GeneratedColumn<int?> createAt = GeneratedColumn<int?>(
       'create_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _updateAtMeta = const VerificationMeta('updateAt');
+  @override
   late final GeneratedColumn<int?> updateAt = GeneratedColumn<int?>(
       'update_at', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
       [id, type, value, thumbnail, size, imgSize, createAt, updateAt];
@@ -395,11 +404,11 @@ class $RecordEntityTable extends RecordEntity
 
   @override
   $RecordEntityTable createAlias(String alias) {
-    return $RecordEntityTable(_db, alias);
+    return $RecordEntityTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<RECORD_TYPE, int> $converter0 =
-      const EnumIndexConverter<RECORD_TYPE>(RECORD_TYPE.values);
+  static TypeConverter<RecordType, int> $converter0 =
+      const EnumIndexConverter<RecordType>(RecordType.values);
 }
 
 abstract class _$DB extends GeneratedDatabase {

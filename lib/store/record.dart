@@ -78,7 +78,7 @@ abstract class _RecordStore with Store {
 
   /// 添加记录前检查
   @action
-  Future<void> addRecord(RECORD_TYPE type, String value) async {
+  Future<void> addRecord(RecordType type, String value) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     // 先从内存数据中查找
     final indexInMemory =
@@ -104,11 +104,11 @@ abstract class _RecordStore with Store {
     }
     // 内存&数据库都没有, 才执行添加
     final imgSizeAndthumbnail =
-        type == RECORD_TYPE.image ? getSizeAndThumbnail(value) : null;
+        type == RecordType.image ? getSizeAndThumbnail(value) : null;
     final imgSize = imgSizeAndthumbnail != null
         ? '${imgSizeAndthumbnail.width}x${imgSizeAndthumbnail.height}'
         : null;
-    final size = type == RECORD_TYPE.file ? await getFileSize(value) : null;
+    final size = type == RecordType.file ? await getFileSize(value) : null;
     final recordEntityCompanion = RecordEntityCompanion(
         type: Value(type),
         value: Value(value),

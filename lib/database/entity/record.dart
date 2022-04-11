@@ -9,7 +9,7 @@ class RecordEntity extends Table {
 
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get type => intEnum<RECORD_TYPE>()();
+  IntColumn get type => intEnum<RecordType>()();
 
   TextColumn get value => text()();
 

@@ -1,5 +1,5 @@
 /// 内容的类型
-enum RECORD_TYPE {
+enum RecordType {
   /// 文本
   text,
 
