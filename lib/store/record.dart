@@ -132,17 +132,18 @@ abstract class _RecordStore with Store {
 
   void _addRecordInMemory(RecordEntityData item) {
     records.insert(0, item);
+    const maxLen = 60;
     if (isEmptyString(searchKW)) {
       setSelectedId(item.id);
     } else if (item.value.contains(searchKW!)) {
       searchedRecords.insert(0, item);
       setSelectedId(item.id);
-      if (searchedRecords.length > 200) {
-        searchedRecords.removeRange(200, searchedRecords.length);
+      if (searchedRecords.length > maxLen) {
+        searchedRecords.removeRange(maxLen, searchedRecords.length);
       }
     }
-    if (records.length > 200) {
-      records.removeRange(200, records.length);
+    if (records.length > maxLen) {
+      records.removeRange(maxLen, records.length);
     }
   }
 
