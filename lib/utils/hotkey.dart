@@ -88,7 +88,7 @@ Future<void> initHotKey() async {
       spIns.getString(SharePerferencesKey.toggleWindowVisibleKey);
   if (localHotKeyStr != null) {
     final hotKey = HotKey.fromJson(json.decode(localHotKeyStr));
-    return bindHotKey(hotKey.keyCode!, hotKey.modifiers!, true);
+    return bindHotKey(hotKey.keyCode, hotKey.modifiers!, true);
   }
   bindHotKey(KeyCode.keyV, [KeyModifier.meta, KeyModifier.shift], true);
 }
