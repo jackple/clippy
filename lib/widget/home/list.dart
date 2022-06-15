@@ -25,23 +25,23 @@ void _handleKey(RawKeyEvent key) {
     final keyCode = data.keyCode;
     // 左右键切换
     if (keyCode == 123 || keyCode == 124) {
-      final _records = isEmptyString(recordStore.searchKW)
+      final records = isEmptyString(recordStore.searchKW)
           ? recordStore.records
           : recordStore.searchedRecords;
-      if (_records.isEmpty) {
+      if (records.isEmpty) {
         return;
       }
       final turnLeft = keyCode == 123;
       final isEnd = turnLeft
-          ? recordStore.selectedId == _records.first.id
-          : recordStore.selectedId == _records.last.id;
+          ? recordStore.selectedId == records.first.id
+          : recordStore.selectedId == records.last.id;
       if (isEnd) {
         return;
       }
       final currentIndex =
-          _records.indexWhere((r) => r.id == recordStore.selectedId);
+          records.indexWhere((r) => r.id == recordStore.selectedId);
       final newIndex = turnLeft ? currentIndex - 1 : currentIndex + 1;
-      recordStore.setSelectedId(_records[newIndex].id);
+      recordStore.setSelectedId(records[newIndex].id);
     } else if (keyCode == 36) {
       // 回车复制
       final item = recordStore.records
