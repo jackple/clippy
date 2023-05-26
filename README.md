@@ -15,3 +15,13 @@ watch模式:
 ```bash
 dart run build_runner watch --delete-conflicting-outputs
 ```
+
+### 打包
+
+```bash 
+flutter build macos
+```
+
+```bash 
+open macos/Runner.xcworkspace
+```
