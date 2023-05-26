@@ -54,7 +54,7 @@ String _hexColorRorrect(String color) {
 }
 
 String _padZero(String str) {
-  str = '0' + str;
+  str = '0$str';
   return str.substring(str.length - 2);
 }
 
@@ -98,7 +98,5 @@ const _suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 String getFileSizeFormat(int bytes, [int decimals = 3]) {
   if (bytes <= 0) return "0 B";
   var i = (log(bytes) / log(1024)).floor();
-  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) +
-      ' ' +
-      _suffixes[i];
+  return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${_suffixes[i]}';
 }

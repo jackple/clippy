@@ -10,8 +10,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[200],
-        body: Column(
-          children: const [
+        body: const Column(
+          children: [
             Header(),
             List(),
           ],

@@ -23,12 +23,12 @@ class Render extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isText = item.type == RecordType.text;
-    final _isColor = isText ? isColor(item.value) : false;
+    final iscolor = isText ? isColor(item.value) : false;
     final isImage = item.type == RecordType.image;
     final isFile = item.type == RecordType.file;
 
     String? text = useMemoized(
-        () => isText && !_isColor
+        () => isText && !iscolor
             ? item.value.length > 450
                 ? item.value.substring(0, 450)
                 : item.value
@@ -60,7 +60,7 @@ class Render extends HookWidget {
             children: [
               Text(
                 isText
-                    ? _isColor
+                    ? iscolor
                         ? '颜色'
                         : '文本'
                     : isImage
@@ -79,7 +79,7 @@ class Render extends HookWidget {
           ),
           Image.asset(
             isText
-                ? _isColor
+                ? iscolor
                     ? "assets/color.png"
                     : "assets/text.png"
                 : isImage
@@ -155,15 +155,17 @@ class Render extends HookWidget {
           ),
         )
       ]);
-    } else if (!_isColor) {
+    } else if (!iscolor) {
       children.addAll([
         Expanded(
             child: Padding(
           padding: const EdgeInsets.all(10),
           child: Text(
             text!,
-            style:
-                Theme.of(context).textTheme.headline4?.copyWith(fontSize: 12),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                ?.copyWith(fontSize: 12),
           ),
         )),
         Padding(

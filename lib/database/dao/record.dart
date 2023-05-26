@@ -11,16 +11,16 @@ part 'record.drift.dart';
 class RecordDao extends DatabaseAccessor<DB> with _$RecordDaoMixin {
   RecordDao(DB db) : super(db);
 
-  Future<List<RecordEntityData>> get({int? oldestUpdateAt, String? keyword}) {
+  Future<List<RecordEntityData>> get(int oldestUpdateAt, {String? keyword}) {
     var query = select(recordEntity);
-    if (oldestUpdateAt != null) {
+    if (oldestUpdateAt != 0) {
       query = query
         ..where((tbl) => tbl.updateAt.isSmallerThanValue(oldestUpdateAt));
     }
     if (!isEmptyString(keyword)) {
       query = query
         ..where((tbl) =>
-            tbl.value.like('%${keyword!}%') &
+            tbl.value.like('%$keyword%') &
             // 只允许搜索文本类型
             tbl.type.equalsValue(RecordType.text));
     }
@@ -39,4 +39,11 @@ class RecordDao extends DatabaseAccessor<DB> with _$RecordDaoMixin {
 
   Future<int> insertOne(RecordEntityCompanion item) =>
       into(recordEntity).insert(item);
+
+  Future<void> removeOldRecords() {
+    final t = DateTime.now().millisecondsSinceEpoch - 1000 * 60 * 60 * 24 * 30;
+    return (delete(recordEntity)
+          ..where((tbl) => tbl.updateAt.isSmallerThanValue(t)))
+        .go();
+  }
 }

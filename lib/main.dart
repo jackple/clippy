@@ -22,7 +22,6 @@ Future<void> initRecords() async {
 }
 
 Future<void> init() async {
-  await initLogger();
   await createDBInstance();
   initRecords();
   // For hot reload, `unregisterAll()` needs to be called.
@@ -41,8 +40,6 @@ Future<void> init() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  init();
   // 全局错误
   FlutterError.onError = (details) async {
     logger.e('catch by FlutterError.onError: ', details);
@@ -52,6 +49,8 @@ void main() async {
   };
 
   runZonedGuarded<void>(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    init();
     runApp(const MyApp());
   }, (Object error, StackTrace stack) {
     logger.e('catch by Guarded: ', error, stack);

@@ -11,11 +11,11 @@ import './record_type.dart';
 
 part 'record.g.dart';
 
-class RecordStore = _RecordStore with _$RecordStore;
+class RecordStore = RecordStoreBase with _$RecordStore;
 
 RecordStore recordStore = RecordStore();
 
-abstract class _RecordStore with Store {
+abstract class RecordStoreBase with Store {
   /// 选中的记录id
   @observable
   int? selectedId;
@@ -48,29 +48,46 @@ abstract class _RecordStore with Store {
   @observable
   ObservableList<RecordEntityData> searchedRecords = ObservableList.of([]);
 
-  /// 清空记录列表(关键词匹配)
-  @action
-  void clearSearchedRecords() {
-    searchedRecords = ObservableList.of([]);
-  }
-
   /// 查找记录
   @action
-  Future<void> getRecords() async {
+  Future<void> getRecords({bool? fromInputSearch}) async {
+    final inSearch = !isEmptyString(searchKW);
+    int oldestUpdateAt = 0;
+    // 常规
+    if (fromInputSearch != true) {
+      final tempList = inSearch ? searchedRecords : records;
+      oldestUpdateAt = tempList.isNotEmpty ? tempList.last.updateAt : 0;
+    } else if (!inSearch) {
+      // 属于搜索框清空内容的操作
+      if (records.isNotEmpty) {
+        setSelectedId(records.first.id);
+      }
+      return;
+    }
+
     if (searching) {
-      return logger.i('正在请求, 本次被拦截');
+      return logger.i('正在请求, 本次被拦截, searchKW: ${searchKW ?? ''}');
     }
     searching = true;
-    final _records = isEmptyString(searchKW) ? records : searchedRecords;
-    final oldestUpdateAt = _records.isNotEmpty ? _records.last.updateAt : null;
+
+    logger.i('用以分页的oldestUpdateAt: ${oldestUpdateAt.toString()}');
     try {
-      final list = await recordDao.get(
-          keyword: searchKW, oldestUpdateAt: oldestUpdateAt);
+      final list = await recordDao.get(oldestUpdateAt, keyword: searchKW);
       // 第一次时默认选中第一个
-      if (oldestUpdateAt == null && list.isNotEmpty) {
+      if (oldestUpdateAt == 0 && list.isNotEmpty) {
         setSelectedId(list.first.id);
       }
-      _records.addAll(list);
+      if (inSearch) {
+        logger.i('inSearch true, ${list.length}');
+        if (oldestUpdateAt == 0) {
+          searchedRecords = ObservableList.of(list);
+        } else {
+          searchedRecords.addAll(list);
+        }
+      } else {
+        logger.i('inSearch false, ${list.length}');
+        records.addAll(list);
+      }
     } finally {
       searching = false;
     }
@@ -118,8 +135,8 @@ abstract class _RecordStore with Store {
         createAt: Value(now),
         updateAt: Value(now));
     final id = await recordDao.insertOne(recordEntityCompanion);
-    final record = db.recordEntity
-        .mapFromCompanion(recordEntityCompanion.copyWith(id: Value(id)));
+    final record = await db.recordEntity
+        .mapFromCompanion(recordEntityCompanion.copyWith(id: Value(id)), db);
     _addRecordInMemory(record);
     logger.i('新增');
   }

@@ -94,6 +94,8 @@ class List extends HookWidget {
       final searchedRecords = recordStore.searchedRecords;
       final displayRecords =
           isEmptyString(searchKW) ? records : searchedRecords;
+      logger.i(
+          'searchKW ${searchKW ?? ''}, displayRecords: ${displayRecords.length}');
 
       return HookBuilder(builder: (_) {
         useEffect(() {

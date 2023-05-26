@@ -1,25 +1,21 @@
-# https://drift.simonbinder.eu/docs/advanced-features/builder_options/
+# # https://drift.simonbinder.eu/docs/advanced-features/builder_options/
 targets:
   $default:
-    # disable the default generators, we'll only use the non-shared moor generator here
+    # disable the default generators, we'll only use the non-shared drift generator here
     auto_apply_builders: false
     builders:
       drift_dev|not_shared:
         enabled: true
-        # If needed, you can configure the builder like this:
-        options:
-          generate_connect_constructor: true
-      # This builder is necessary for moor-file preprocessing. You can disable it if you're not
-      # using .moor files with type converters.
       drift_dev|preparing_builder:
         enabled: true
-  
+
   run_built_value:
-    dependencies: ['mobx_codegen']
+    dependencies: ['clippy']
     builders:
-      # Disable moor builders. By default, those would run on each target
+      # Disable drift_dev builders. By default, those would run on each target
       drift_dev:
         enabled: false
       drift_dev|preparing_builder:
         enabled: false
       # we don't need to disable moor_generator_not_shared, because it's disabled by default
+

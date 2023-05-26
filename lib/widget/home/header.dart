@@ -25,10 +25,8 @@ class _HeaderState extends State<Header> {
     _cancelDebounce();
     recordStore.setSearchKW(_controller.text);
     _debounce = Timer(const Duration(milliseconds: 200), () async {
-      // 先清空记录再去请求
       logger.i('search kw ${recordStore.searchKW}');
-      recordStore.clearSearchedRecords();
-      recordStore.getRecords();
+      recordStore.getRecords(fromInputSearch: true);
     });
   }
 

@@ -63,24 +63,24 @@ MaterialColor createMaterialColor(Color color) {
 /// 文本主题
 const TextTheme textTheme = TextTheme(
   // body
-  bodyText1:
+  bodyLarge:
       TextStyle(color: colorBlack2, fontSize: 14, fontWeight: FontWeight.w400),
-  bodyText2:
+  bodyMedium:
       TextStyle(color: colorBlack2, fontSize: 14, fontWeight: FontWeight.w300),
   // subtitle
-  subtitle1: TextStyle(color: colorBlack1, fontSize: 14),
-  subtitle2:
+  titleMedium: TextStyle(color: colorBlack1, fontSize: 14),
+  titleSmall:
       TextStyle(color: colorGray, fontSize: 12, fontWeight: FontWeight.w300),
   // headline
-  headline1: TextStyle(color: colorBlack1, fontSize: 18),
-  headline2: TextStyle(color: colorBlack1, fontSize: 16),
-  headline3: TextStyle(color: colorBlack1, fontSize: 14),
-  headline4:
+  displayLarge: TextStyle(color: colorBlack1, fontSize: 18),
+  displayMedium: TextStyle(color: colorBlack1, fontSize: 16),
+  displaySmall: TextStyle(color: colorBlack1, fontSize: 14),
+  headlineMedium:
       TextStyle(color: colorBlack1, fontSize: 13, fontWeight: FontWeight.w300),
-  headline5:
+  headlineSmall:
       TextStyle(color: colorGray, fontSize: 12, fontWeight: FontWeight.w300),
   // button
-  button: TextStyle(color: Colors.white, fontSize: 14),
+  labelLarge: TextStyle(color: Colors.white, fontSize: 14),
 );
 
 const UnderlineInputBorder underlineInputBorder =
